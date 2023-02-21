@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LightBox Keyboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shantell+Sans:wght@300&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* CSS Reset */
+      /* http://meyerweb.com/eric/tools/css/reset/
+         v2.0 | 20110126
+         License: none (public domain)
+      */
+
+      html,
+      body,
+      div,
+      span,
+      applet,
+      object,
+      iframe,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p,
+      blockquote,
+      pre,
+      a,
+      abbr,
+      acronym,
+      address,
+      big,
+      cite,
+      code,
+      del,
+      dfn,
+      em,
+      img,
+      ins,
+      kbd,
+      q,
+      s,
+      samp,
+      small,
+      strike,
+      strong,
+      sub,
+      sup,
+      tt,
+      var,
+      b,
+      u,
+      i,
+      center,
+      dl,
+      dt,
+      dd,
+      ol,
+      ul,
+      li,
+      fieldset,
+      form,
+      label,
+      legend,
+      table,
+      caption,
+      tbody,
+      tfoot,
+      thead,
+      tr,
+      th,
+      td,
+      article,
+      aside,
+      canvas,
+      details,
+      embed,
+      figure,
+      figcaption,
+      footer,
+      header,
+      hgroup,
+      menu,
+      nav,
+      output,
+      ruby,
+      section,
+      summary,
+      time,
+      mark,
+      audio,
+      video {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+      }
+      /* HTML5 display-role reset for older browsers */
+      article,
+      aside,
+      details,
+      figcaption,
+      figure,
+      footer,
+      header,
+      hgroup,
+      menu,
+      nav,
+      section {
+        display: block;
+      }
+      body {
+        line-height: 1;
+      }
+      ol,
+      ul {
+        list-style: none;
+      }
+      blockquote,
+      q {
+        quotes: none;
+      }
+      blockquote:before,
+      blockquote:after,
+      q:before,
+      q:after {
+        content: "";
+        content: none;
+      }
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      /* CSS Reset */
+
+      /* Clear */
+      /**
+       * For modern browsers
+       * 1. The space content is one way to avoid an Opera bug when the
+       *    contenteditable attribute is included anywhere else in the document.
+       *    Otherwise it causes space to appear at the top and bottom of elements
+       *    that are clearfixed.
+       * 2. The use of `table` rather than `block` is only necessary if using
+       *    `:before` to contain the top-margins of child elements.
+       */
+      .cf:before,
+      .cf:after {
+        content: " "; /* 1 */
+        display: table; /* 2 */
+      }
+
+      .cf:after {
+        clear: both;
+      }
+
+      /**
+       * For IE 6/7 only
+       * Include this rule to trigger hasLayout and contain floats.
+       */
+      .cf {
+        *zoom: 1;
+      }
+      /* Clear */
+
+      body {
+        font-family: "Shantell Sans", cursive;
+      }
+
+      .container {
+        width: 600px;
+        background-color: gray;
+        margin: auto;
+        padding: 20px;
+        box-shadow: 0 0 3px 5px rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+      }
+
+      h1 {
+        margin: 50px 0;
+        text-align: center;
+        font-size: 50px;
+        font-weight: 700;
+        text-shadow: 5px 5px 5px grey;
+      }
+
+      .gallery li {
+        width: 120px;
+        height: 120px;
+        /* overflow: hidden; */
+        border: 5px solid #666;
+        float: left;
+        margin-right: 20px;
+        position: relative;
+      }
+
+      .gallery li,
+      .gallery li img,
+      .gallery li span {
+        border-radius: 50%;
+      }
+
+      .gallery li span {
+        display: block;
+        width: 120px;
+        height: 120px;
+        background-color: rgba(200, 200, 200, 0.5);
+        position: absolute;
+        top: 0;
+        text-align: center;
+        line-height: 120px;
+        color: #333;
+        text-shadow: 1px 1px 1px #ddd;
+        opacity: 0;
+        transition: 0.3s;
+        transform: scale(0) rotate(0);
+        font-weight: 700;
+      }
+
+      .gallery li a:hover span {
+        opacity: 1;
+        transform: scale(1) rotate(360deg);
+      }
+
+      .overlay {
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
+        z-index: 999999;
+        transition: 1s;
+        text-align: center;
+        padding: 100px;
+      }
+
+      .overlay:target {
+        width: auto;
+        height: auto;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .overlay img {
+        max-height: 100%;
+        box-shadow: 5px 5px 7px rgba(0, 0, 0, 0.5);
+      }
+
+      .overlay:target img {
+        animation: fade 3s;
+      }
+
+      .overlay .close {
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        margin-left: -20px;
+        color: white;
+        text-decoration: none;
+        background-color: black;
+        border: 1px solid white;
+        line-height: 10px;
+        padding: 5px;
+        opacity: 0;
+      }
+
+      .overlay:target .close {
+        animation: slideDownFade 0.5s 0.5s forwards;
+      }
+
+      .overlay:target .next,
+      .overlay:target .prev {
+        animation: fade 0.5s 0.5s forwards;
+      }
+
+      .next,
+      .prev {
+        width: 57px;
+        height: 93px;
+        background-image: url(img/thum/switch-right.svg);
+        background-repeat: no-repeat;
+        position: absolute;
+        text-indent: -99999;
+        top: 40%;
+        margin-left: 50px;
+        opacity: 0;
+      }
+
+      .prev {
+        background-image: url(img/thum/switch-left.svg);
+        margin-left: -100px;
+      }
+
+      @keyframes zoomAndFate {
+        0% {
+          transform: 0;
+          opacity: 0;
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideDownFade {
+        0% {
+          opacity: 0;
+          margin-top: -20px;
+        }
+
+        100% {
+          opacity: 1;
+          margin-top: 0;
+        }
+      }
+
+      @keyframes fade {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>The Keyboard</h1>
+
+    <div class="container">
+      <ul class="gallery cf">
+        <li>
+          <a href="#gambar1"
+            ><img src="img/thum/t1.jpg" alt="Keyboard 1" />
+            <span>Keyboard 1</span></a
+          >
+
+          <div class="overlay" id="gambar1">
+            <a href="#" class="close"> X Close</a>
+            <a href="#gambar4" class="prev"></a>
+            <img src="img/full/1.jpg" alt="Keyboard 1" />
+            <a href="#gambar2" class="next"></a>
+          </div>
+        </li>
+
+        <li>
+          <a href="#gambar2"
+            ><img src="img/thum/t2.jpg" alt="Keyboard 2" />
+            <span>Keyboard 2</span></a
+          >
+          <div class="overlay" id="gambar2">
+            <a href="#" class="close"> X Close</a>
+            <a href="#gambar1" class="prev"></a>
+            <img src="img/full/2.jpg" alt="Keyboard 2" />
+            <a href="#gambar3" class="next"></a>
+          </div>
+        </li>
+
+        <li>
+          <a href="#gambar3"
+            ><img src="img/thum/t3.jpg" alt="Keyboard 3" />
+            <span>Keyboard 3</span></a
+          >
+          <div class="overlay" id="gambar3">
+            <a href="#" class="close"> X Close</a>
+            <a href="#gambar2" class="prev"></a>
+            <img src="img/full/3.jpg" alt="Keyboard 3" />
+            <a href="#gambar4" class="next"></a>
+          </div>
+        </li>
+
+        <li>
+          <a href="#gambar4"
+            ><img src="img/thum/t4.jpg" alt="Keyboard 4" />
+            <span>Keyboard 4</span></a
+          >
+          <div class="overlay" id="gambar4">
+            <a href="#" class="close"> X Close</a>
+            <a href="#gambar3" class="prev"></a>
+            <img src="img/full/4.jpg" alt="Keyboard 4" />
+            <a href="#gambar1" class="next"></a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
